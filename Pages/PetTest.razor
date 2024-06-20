@@ -1,0 +1,10 @@
+﻿@page "/pet"
+
+<h3>Pet</h3>
+<h2>@message</h2>
+
+<input type="text" @bind-value="message" />
+
+@code {
+	string message = "Wiadomość 2";
+}

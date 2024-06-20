@@ -1,0 +1,51 @@
+﻿@page "/home"
+@inject IPetApiService petApiService
+
+<div class="app-background text-center text-light p-5">
+	<h2> Zaadoptuj zwierzaka lub pomóż w inny sposób!</h2>
+</div>
+
+
+<div class="app-background d-flex justify-content-center">
+	<div class="p-2">
+		<button type="button" class="btn text-light btn-rounded" style="background-color:#6a994e" routerLink="/pets-to-adopt"> Zwierzęta do adopcji </button>
+	</div>
+
+	<div class="p-2">
+		<button type="button" class="btn text-light btn-rounded" style="background-color:#6a994e" routerLink="/sick-pets"> Chore zwierzęta </button>
+	</div>
+
+</div>
+
+<div class="app-background text-start text-light px-7 pb-1">
+	<h5 class="p-5"> <b>Najnowsze:</b></h5>
+</div>
+
+@if (Pets != null)
+{
+	<div>
+		@foreach (var pet in Pets)
+		{
+			<PetComponent Pet="pet" />
+		}
+	</div>
+}
+else
+{
+	<div>Loading...</div>
+}
+
+
+@code {
+
+	private bool isPets = false;
+
+	public IEnumerable<Pet> Pets { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		Pets = (await petApiService.GetNewestPets()).ToList();
+	}
+
+
+}

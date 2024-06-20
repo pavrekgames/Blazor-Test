@@ -1,0 +1,116 @@
+﻿@page "/register"
+@inject IUserApiService userApiService
+@inject NavigationManager navigationManager
+@inject JsConsole jSConsole
+@inject IJSRuntime JSRuntime
+
+<div class="app-background center ">
+
+	<div class="mx-auto row justify-content-center px-6 pt-5">
+
+		<div class="col-lg-5 rounded ">
+
+			<div class="p-4 text-light text-center">
+				<h3>Rejestracja</h3>
+			</div>
+
+			<div class="text-light">
+
+				<EditForm Model="@userRegister" OnValidSubmit="OnSubmit">
+					<DataAnnotationsValidator />
+
+					<label for="Name" class="form-label m-2">Imię:</label>
+					<InputText id="Name" class="form-control" @bind-Value="@userRegister.Name"></InputText>
+
+					<div class="text-danger p-1">
+						<ValidationMessage For="@(() => userRegister.Name)" />
+					</div>
+
+					<label for="Surname" class="form-label m-2">Nazwisko:</label>
+					<InputText id="Surname" class="form-control" @bind-Value="@userRegister.Surname"></InputText>
+
+					<div class="text-danger p-1">
+						<ValidationMessage For="@(() => userRegister.Surname)" />
+					</div>
+
+					<label for="Email" class="form-label m-2">E-mail:</label>
+					<InputText id="Email" class="form-control" @bind-Value="@userRegister.Email"></InputText>
+
+					<div class="text-danger p-1">
+						<ValidationMessage For="@(() => userRegister.Email)" />
+					</div>
+
+					@if (errorMessage != String.Empty)
+					{
+						<div class="text-danger p-1">
+							@errorMessage
+						</div>
+					}
+					
+					<label for="Password" class="form-label m-2">Hasło:</label>
+					<InputText type="password" class="form-control" id="Password" @bind-Value="@userRegister.Password"></InputText>
+
+					<div class="text-danger p-1">
+						<ValidationMessage For="@(() => userRegister.Password)" />
+					</div>
+
+					<label for="ConfirmPassword" class="form-label m-2">Powtórz hasło:</label>
+					<InputText type="password" class="form-control" id="ConfirmPassword" @bind-Value="@userRegister.ConfirmPassword"></InputText>
+
+					<div class="text-danger p-1">
+						<ValidationMessage For="@(() => userRegister.ConfirmPassword)" />
+					</div>
+
+					<div class="text-center m-4">
+						<button type="submit" class="btn btn-warning">Załóż konto</button>
+					</div>
+
+				</EditForm>
+
+				<div>
+					<button type="button" class="btn btn-warning" @onclick="OnSubmitJavaScript">Zmień kolor</button>
+				</div>
+
+			</div>
+		</div>
+
+	</div>
+
+</div>
+
+
+@code {
+
+	private UserRegisterDto userRegister = new();
+
+	private string errorMessage = String.Empty;
+
+	public async Task OnSubmit()
+	{
+		errorMessage = string.Empty;
+		var response = await userApiService.Register(userRegister);
+		await jSConsole.LogAsync("OnSubmit");
+
+		if (response.IsSuccessStatusCode)
+		{
+			navigationManager.NavigateTo("/login");
+		}else
+		{
+			//errorMessage = "Podany e-mail już istnieje! Wprowadź inny adres e-mail";
+			errorMessage = await response.Content.ReadAsStringAsync();
+
+		}
+	}
+
+	public async Task OnSubmitJavaScript()
+	{
+		//var apiUrl = "http://localhost:5251/api/register";
+		//var result = await JSRuntime.InvokeAsync<string>("apiFunctions.registerUser", apiUrl, userRegister);
+
+		//await JSRuntime.InvokeVoidAsync("apiFunctions.changeColor");
+		await JSRuntime.InvokeVoidAsync("apiFunctions.hideLabels");
+	}
+
+
+
+}

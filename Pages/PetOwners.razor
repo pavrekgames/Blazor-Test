@@ -1,0 +1,53 @@
+﻿@page "/pet-owners"
+@inject IUserApiService userApiService
+
+<div class="app-background text-center text-light p-5">
+    <h2> Właścieciele zwierząt</h2>
+</div>
+
+@if(Users != null && Users.Count() > 0)
+{
+    <div>
+        <table class="table table-striped table-dark table-sm table-bordered text-center">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Imię</th>
+                    <th scope="col">Nazwisko</th>
+                    <th scope="col">Imię zwierzęcia</th>
+                    <th scope="col">Rasa</th>
+                    <th scope="col">Zdjęcie</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{int i = 1;}
+                @foreach(var user in Users)
+                {
+                    <tr>
+                        <th scope="row">@i</th>
+                        <td>@user.Name</td>
+                        <td>@user.Surname</td>
+                        <td>@user.PetName</td>
+                        <td>@user.PetSpecies</td>
+                        <td><img src="@user.PetPhoto" class="img-size-my-pet"> </td>
+                    </tr>
+                    i++;
+                } 
+
+            </tbody>
+        </table>
+    </div>
+}
+
+
+
+@code {
+
+    private IEnumerable<UserPetOwnerDto> Users { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+        Users = (await userApiService.GetUsersPetOwners()).ToList();
+	}
+
+}

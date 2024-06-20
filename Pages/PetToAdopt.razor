@@ -1,0 +1,69 @@
+﻿@page "/pet-to-adopt/{id:int}"
+@inject IPetApiService petApiService
+
+<div class="app-background text-center text-light p-5">
+	<h2> Zwierzę do adopcji</h2>
+</div>
+
+@if(Pet != null)
+{
+    <div class="mx-auto row px-7 app-background text-light justify-content-center pb-2 ">
+
+        <div class="col-auto p-2">
+
+            <div class="justify-content-center">
+                <img src="@Pet.Photo_Path" class="img-size-pet">
+            </div>
+
+            <div class="text-center text-warning p-2">
+                <h3><b>@Pet.Name</b></h3>
+            </div>
+
+        </div>
+
+
+        <div class="col-6 ms-3">
+            <div class="mx-auto row justify-content-center pe-5">
+
+                <div class="col-auto p-1"><span class="p-3 badge bg-primary rounded-pill">@Pet.Species</span></div>
+                <div class="col-auto p-1"><span class=" p-3 badge bg-primary rounded-pill">@Pet.Race</span></div>
+                <div class="col-auto p-1"><span class=" p-3 badge bg-primary rounded-pill">@Pet.Size</span></div>
+            </div>
+
+            <div class="mx-auto row p-4 justify-content-center">
+                @Pet.Description
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="app-background text-center text-light px-8 pt-4">
+
+        <div class="pt-4 border-top">
+            <button type="button" class="btn text-light btn-rounded" style="background-color:#6a994e" routerLink="/"> Zwierzęta do adopcji </button>
+        </div>
+
+    </div>
+}
+else
+{
+    <p>Wczytywanie...</p>
+}
+
+
+
+
+@code {
+    private Pet Pet { get; set; }
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Pet = (await petApiService.GetPetById(Id));
+    }
+
+}
