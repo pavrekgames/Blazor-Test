@@ -1,5 +1,6 @@
 ﻿@page "/home"
 @inject IPetApiService petApiService
+@inject JsConsole jsConsole
 
 <div class="app-background text-center text-light p-5">
 	<h2> Zaadoptuj zwierzaka lub pomóż w inny sposób!</h2>
@@ -35,10 +36,19 @@ else
 	<div>Loading...</div>
 }
 
+<div>
+	<button class="btn btn-info" @onclick="OpenModal">Open Modal</button>
+</div>
+
+@if (isModal)
+{
+	<ModalTest Content="Czy na pewno chcesz usunąć zwierzę o imieniu Mruczek?" OnCloseModal="CloseModal" OnSubmitModal="SubmitModal" />
+}
 
 @code {
 
 	private bool isPets = false;
+	public bool isModal { get; set; } = false;
 
 	public IEnumerable<Pet> Pets { get; set; }
 
@@ -47,5 +57,23 @@ else
 		Pets = (await petApiService.GetNewestPets()).ToList();
 	}
 
+	private void OpenModal()
+	{
+		isModal = true;
+	}
+
+	private async void CloseModal()
+	{
+		await jsConsole.LogAsync("Close modal");
+		isModal = false;
+		StateHasChanged();
+		await jsConsole.LogAsync(isModal.ToString());
+	}
+
+	private async void SubmitModal()
+	{
+		CloseModal();
+		await jsConsole.LogAsync("Submit Modal");
+	}
 
 }

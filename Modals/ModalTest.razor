@@ -1,0 +1,40 @@
+﻿<div class="row modal">
+    <div class="modal-header">
+        @Title
+        <span class="modal-close float-end" @onclick="InvokeOnClose">x</span>
+    </div>
+
+    <div class="modal-content">
+        @Content
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-primary" @onclick="InvokeOnSubmit">Tak</button>
+        <button class="btn btn-danger" @onclick="InvokeOnClose">Nie</button>
+    </div>
+
+</div>
+
+<div class="modal-backdrop" @onclick="InvokeOnClose"></div>
+
+@code {
+
+    [Parameter]
+    public string Title { get; set; } = "Usuwanie zwierząt";
+    [Parameter]
+    public string Content { get; set; } = "Czy na pewno chcesz usunąć zwierzę?";
+
+    [Parameter] public Action? OnCloseModal { get; set; }
+    [Parameter] public Action? OnSubmitModal { get; set; }
+
+    private void InvokeOnClose()
+    {
+        OnCloseModal?.Invoke();
+    }
+
+    private void InvokeOnSubmit()
+    {
+        OnSubmitModal?.Invoke();
+    }
+
+}
